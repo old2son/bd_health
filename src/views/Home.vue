@@ -15,8 +15,6 @@ for (const path in modules) {
     }
 }
 
-console.log(data)
-
 </script>
 
 <template>
@@ -27,6 +25,3 @@ console.log(data)
     </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>

@@ -1,13 +1,67 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, nextTick, computed, provide } from 'vue';
+import setKeyWords from '@/utils/setKeyWords';
 import html2canvas from 'html2canvas'
 
 const data = reactive({
-    
-})
+    title: '尿道炎自愈？别闹，跟我学科学护理！',
+    root: [
+        {
+			cont: [
+				{
+					h2Tl: '尿道炎能否自愈',
+					h3Tl: '1.了解敌人：漏尿的原因',
+					normalText: 
+						`
+							首先，我们要明确一点，<span class="key">尿道炎不能自愈</span>。如果你有<span class="key">尿频、尿急、尿痛</span>等症状，一定要<span class="key">及时就医</span>，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。
+						`
+				},
+				{
+				h3Tl: '2.强化盆底肌',
+				normalText: 
+					`
+						<b>Kegel练习:</b>这是最基础也是最有效的方法之一。<span>每天花几分钟</span>时间做Kegel练习，可以显著改善盆底肌肉的力量。
+						<br><br>
+						<b>瑜伽和普拉提:</b>这些活动也能帮助您<span>锻炼盆底肌</span>。
+					`
+				}
+			]
+        },
+        {
+            cont: [
+				{
+					h2Tl: '尿道炎日常护理小贴士',
+					h3Tl: '饮食调整',
+					normalText: 
+						`
+							<span>多喝水</span>，尤其是<span>茶水</span>，可以帮助冲洗尿道，减少细菌滋生。同时，<span>避免食用辛辣、刺激性强</span>的食物，以免刺激尿道，加重症状。
+						`
+				},
+				{
+					h3Tl: '个人卫生',
+					normalText: 
+						`
+							注意个人卫生，尤其是性生活后，要<span>及时清洁</span>，避免细菌感染。同时，<span>避免使用公共浴室</span>，以防交叉感染。
+						`
+				},
+			]
+        },
+    ]
+});
+
+/* for (let i = 0; i < data.root.length; i++) {
+    // 使用 for 循环遍历 cont 数组
+    for (let j = 0; j < data.root[i].cont.length; j++) {
+        // 在 normalText 中插入 h3Tl
+        data.root[i].cont[j].normalText = `<h3>${data.root[i].cont[j].h3Tl}</h3>${data.root[i].cont[j].normalText}`;
+    }
+} */
+
+setKeyWords(data.root);
 
 onMounted(() => {
-    const element = document.querySelector("#test") as HTMLElement;
+    document.title = data.title;
+    const element = document.querySelector("#dr-202403041930") as HTMLElement;
     if (element instanceof HTMLElement) {
         html2canvas(element).then(canvas => {
             document.body.appendChild(canvas);
@@ -16,10 +70,12 @@ onMounted(() => {
         console.error("Unable to find the element with ID 'capture'");
     }
 
-    saveImg(element)
+	nextTick(() => {
+		/* saveImg(element); */
+	});
 });
 
-function saveImg(element: HTMLElement | null, setTitle = '', j = 0) {
+function saveImg(element: HTMLElement | null, setTitle = '', i = 0) {
 	const realHtml = document.getElementById('html-canvas');
 	const width = 1200;
 
@@ -55,35 +111,47 @@ function saveImg(element: HTMLElement | null, setTitle = '', j = 0) {
             const imgUri = canvas.toDataURL('image/' + img_type, 0.9);
             const saveLink = document.createElement('a');
             saveLink.href = imgUri;
-            saveLink.download = setTitle + (j + 1) + '.' + (img_type === 'jpeg' ? 'jpg' : img_type);
+            saveLink.download = setTitle + (i + 1) + '.' + (img_type === 'jpeg' ? 'jpg' : img_type);
             saveLink.click();
 
             const c = document.querySelector('canvas');
-            c && canvas.remove();
+            c && c.remove();
         });
     }
 }
 
-const id = `202403041930`
 </script>
 
 <template>
      <!-- class="dr-202403041930" id="dr-202403041930" -->
-    <div class="bg" id="html-canvas" data-id="202403041930">
+    <div class="bg" id="dr-202403041930" data-id="202403041930">
         <div class="title-wrap">
-            <h1 id="title"></h1>
+            <h1 id="title">{{ data.title }}</h1>
         </div>
-        <div class="content" id="content"></div>
+        <div class="content" id="content">
+            <template v-for="(item, i) in data.root" :key="i">
+            	<template v-for="(c, j) in item.cont" :key="j">
+					<div v-if="c.h2Tl" class="h2-tl">
+						<h2 class="right">{{ c.h2Tl }}</h2>
+						<i class="line"></i>
+					</div>
+					<div v-if="c.normalText" class="text-wrap">
+						<!-- <b v-if="c.h3Tl" v-html="c.h3Tl"></b> -->
+						<div class="cont" v-html="c.normalText"></div>
+					</div>
+				</template>
+            </template>
+        </div>
     </div>
 </template>
 
-<style scoped lang="css">
-:root {
+<style >
+#dr-202403041930 {
 	--main-bdr-color: #000;
 	--title-color: #b0d796;
 	--title-stroke-color: #3e2308;
-	--subtitle-color: #3c6421;
-	--subtitle-bg-color: #fffde6;
+	--h2-tl-color: #3c6421;
+	--h2-tl-bg-color: #fffde6;
 	--text-color: #362e2b;
 	--summary-color: #3c6421;
 	--key-color: #eb6100;
@@ -93,12 +161,13 @@ const id = `202403041930`
 	--list-circle-bg-color: #f9ff58;
 }
 
+
 .bg {
 	width: 1200px;
 	height: 1600px;
 	margin: auto;
 	overflow: hidden;
-	background: v-bind('`url(img/bg/bg_${id}.jpg) center top no-repeat;`');
+    background: url(@/assets/images/bg/bg_202403041930.jpg) center top no-repeat;
 }
 
 .content {
@@ -107,7 +176,7 @@ const id = `202403041930`
 }
 
 .title-wrap {
-	padding-top: 65px;
+	padding-top: 110px;
 	text-align: center;
 
 	h1 {
@@ -115,13 +184,15 @@ const id = `202403041930`
 		position: relative;
 		height: 80px;
 		line-height: 80px;
+		padding: 0;
+		margin: 0;
 		-webkit-text-stroke-width: 1.5px;
 		-webkit-text-stroke-color: var(--title-stroke-color);
 		text-shadow: #000 0 4px 0px;
 		text-align: center;
 		color: var(--title-color);
 		font-size: 60px;
-		font-family: SourceHanSansCN-Bold;
+		font-family: SourceHanSansCN-Heavy;
 
 		&::before {
 			position: absolute;
@@ -133,7 +204,7 @@ const id = `202403041930`
 			width: 50px;
 			height: 100px;
 			transform: translateY(-50%);
-			background: url(img/item/title_star_001.png) center center no-repeat;
+			background: url(@/assets/images/item/title_star_001.png) center center no-repeat;
 			background-size: auto 100%;
 		}
 
@@ -147,27 +218,27 @@ const id = `202403041930`
 			width: 50px;
 			height: 100px;
 			transform: translateY(-50%);
-			background: url(img/item/title_star_002.png) center center no-repeat;
+			background: url(@/assets/images/item/title_star_002.png) center center no-repeat;
 			background-size: auto 100%;
 		}
 		
 	}
 }
 
-.subtitle {
+.h2-tl {
 	display: table;
 	position: relative;
 	width: auto;
 	height: 100px;
 	line-height: 100px;
 	margin: 20px 0 0;
-	color: var(--subtitle-color);
+	color: var(--h2-tl-color);
 
-	.right {
+	h2 {
 		position: relative;
 		z-index: 2;
 		float: left;
-		color: var(--subtitle-color);
+		color: var(--h2-tl-color);
 		font-size: 54px;
 		font-family: SourceHanSansCN-Bold;
 	}
@@ -185,17 +256,27 @@ const id = `202403041930`
 	}
 }
 
-.text {
-	line-height: 64px;
-	padding: 0px 30px 20px;
-	margin-top: 0px;
-	text-align: left;
-	color: var(--text-color);
-	font-size: 42px;
-	font-family: SourceHanSansCN-Regular;
+.text-wrap {
+	.cont {
+		line-height: 64px;
+		padding: 0px 30px 20px;
+		margin-top: 0px;
+		text-align: left;
+		color: var(--text-color);
+		font-size: 42px;
+		font-family: SourceHanSansCN-Regular;
 
-	i {
-		color: var(--key-color);
+		i {
+			color: var(--key-color);
+		}
+
+		h3 {
+			display: inline;
+			color: var(--text-color);
+			font-weight: 700;
+			font-size: 42px;
+			font-family: SourceHanSansCN-Regular;
+		}
 	}
 }
 
@@ -206,13 +287,10 @@ const id = `202403041930`
 	margin-top: 50px;
 	border: 4px dashed var(--summary-color);
 	border-radius: 20px;
-	/* text-align: left; */
 	text-align: center;
 	color: var(--summary-color);
 	font-size: 46px;
 	font-family: SourceHanSansCN-Regular;
-	/* background: url(img/item/border_001.png) center top no-repeat;
-	background-size: 100% 100%; */
 
 	&::before {
 		position: absolute;
@@ -221,7 +299,7 @@ const id = `202403041930`
 		content: '';
 		width: 46px;
 		height: 46px;
-		background: url(img/item/icon_start_001.png) center no-repeat;
+		background: url(@/assets/images/item/icon_start_001.png) center no-repeat;
 		background-size: 100%;
 	}
 
@@ -232,7 +310,7 @@ const id = `202403041930`
 		content: '';
 		width: 46px;
 		height: 46px;
-		background: url(img/item/icon_start_001.png) center no-repeat;
+		background: url(@/assets/images/item/icon_start_001.png) center no-repeat;
 		background-size: 100%;
 	}
 
