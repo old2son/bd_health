@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, nextTick, computed, provide } from 'vue';
-import setKeyWords from '@/utils/setKeyWords';
+import editText from '@/utils/editText';
 import html2canvas from 'html2canvas'
 
 const data = reactive({
@@ -13,7 +13,7 @@ const data = reactive({
 					h3Tl: '1.了解敌人：漏尿的原因',
 					normalText: 
 						`
-							首先，我们要明确一点，<span class="key">尿道炎不能自愈</span>。如果你有<span class="key">尿频、尿急、尿痛</span>等症状，一定要<span class="key">及时就医</span>，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。，以免病情加重。
+							首先，我们要明确一点，<span class="key">尿道炎不能自愈</span>。如果你有<span class="key">尿频、尿急、尿痛</span>等症状，一定要<span class="key">及时就医</span>，以免病情加重。，以免病情加重。，以免病情加重。
 						`
 				},
 				{
@@ -57,7 +57,7 @@ const data = reactive({
     }
 } */
 
-setKeyWords(data.root);
+editText(data.root);
 
 onMounted(() => {
     document.title = data.title;
@@ -71,7 +71,7 @@ onMounted(() => {
     }
 
 	nextTick(() => {
-		/* saveImg(element); */
+		saveImg(element);
 	});
 });
 

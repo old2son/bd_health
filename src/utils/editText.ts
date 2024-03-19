@@ -1,4 +1,4 @@
-let keywords = [
+const keywords = [
 	'肝脏',
 	'胆囊',
 	'心血管',
@@ -54,23 +54,48 @@ let keywords = [
 	'污染',
 ];
 
-let banwords = ['🐢', '⭐️', '星', '@'];
+const banwords = ['🐢', '⭐️', '星', '@'];
 
-/* var parts = txt.split(new RegExp('(' + keywords.join('|') + ')')); */
-
-const setKeyWords = (root: any[]) => {
+const editText = (root: any[]) => {
 	for (let i = 0; i < root.length; i++) {
 		for (let j = 0; j < root[i].cont.length; j++) {
 			const cont = root[i].cont[j];
 			cont?.h3Tl && setH3(cont);
-
-			/* cont.normalText. */
+			setKey(cont);
 		}
 	}
+}
+
+const setKey = (cont: { [key: string]: any }) => {
+	let text = cont.normalText;
+	const parts = text.split(new RegExp('(' + keywords.join('|') + ')'));
+	let result = '';
+	parts.forEach(function(part: string, index: number) {
+		const isKeyword = keywords.indexOf(part) !== -1;
+		const isBanword = banwords.indexOf(part) !== -1;
+		if (isKeyword && !isBanword) {
+			part.split('').map(function(char, index) {
+				if (index === 0) {
+					result += `<i class="first">${char}</i>`
+				}
+				else if (index === part.length - 1) {
+					result += `<i class="last">${char}</i>`
+				}
+				else {
+					result += `<i>${char}</i>`
+				}
+			});
+		} 
+		else {
+			result += part;
+		}
+	});
+
+	cont.normalText = result;
 }
 
 const setH3 = (cont: { [key: string]: any }) => {
 	cont.normalText = `<h3>${cont.h3Tl}</h3>${cont.normalText}`;
 }
 
-export default setKeyWords;
+export default editText;
