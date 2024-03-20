@@ -60,8 +60,8 @@ const editText = (root: any[]) => {
 	for (let i = 0; i < root.length; i++) {
 		for (let j = 0; j < root[i].cont.length; j++) {
 			const cont = root[i].cont[j];
-			cont?.h3Tl && setH3(cont);
 			setKey(cont);
+			cont?.h3Tl && setH3(cont);
 		}
 	}
 }
@@ -70,11 +70,13 @@ const setKey = (cont: { [key: string]: any }) => {
 	let text = cont.normalText;
 	const parts = text.split(new RegExp('(' + keywords.join('|') + ')'));
 	let result = '';
-	parts.forEach(function(part: string, index: number) {
+
+	for (let i = 0; i < parts.length; i++) {
+		const part = parts[i];
 		const isKeyword = keywords.indexOf(part) !== -1;
 		const isBanword = banwords.indexOf(part) !== -1;
 		if (isKeyword && !isBanword) {
-			part.split('').map(function(char, index) {
+			part.split('').map((char: string, index: number) => {
 				if (index === 0) {
 					result += `<i class="first">${char}</i>`
 				}
@@ -89,7 +91,7 @@ const setKey = (cont: { [key: string]: any }) => {
 		else {
 			result += part;
 		}
-	});
+	}
 
 	cont.normalText = result;
 }

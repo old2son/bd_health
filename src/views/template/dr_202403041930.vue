@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick, computed, provide } from 'vue';
+import { ref, reactive, onMounted, nextTick, watch } from 'vue';
 import editText from '@/utils/editText';
+import eidtHtmlSetKey from '@/utils/eidtHtmlSetKey';
 import html2canvas from 'html2canvas'
 
 const data = reactive({
     title: '尿道炎自愈？别闹，跟我学科学护理！',
-    root: [
+    root: [] as any[],
+	temp: [
         {
 			cont: [
 				{
@@ -13,16 +15,16 @@ const data = reactive({
 					h3Tl: '1.了解敌人：漏尿的原因',
 					normalText: 
 						`
-							首先，我们要明确一点，<span class="key">尿道炎不能自愈</span>。如果你有<span class="key">尿频、尿急、尿痛</span>等症状，一定要<span class="key">及时就医</span>，以免病情加重。，以免病情加重。，以免病情加重。
+							首先，我们要明确一点，<span class="js-key">尿道炎不能自愈</span>。如果你有<span class="js-key">尿频、尿急、尿痛</span>等症状，一定要<span class="js-key">及时就医</span>，以免病情加重。，以免病情加重。，以免病情加重。
 						`
 				},
 				{
 				h3Tl: '2.强化盆底肌',
 				normalText: 
 					`
-						<b>Kegel练习:</b>这是最基础也是最有效的方法之一。<span>每天花几分钟</span>时间做Kegel练习，可以显著改善盆底肌肉的力量。
+						<b>Kegel练习:</b>这是最基础也是最有效的方法之一。<span class="js-key">每天花几分钟</span>时间做Kegel练习，可以显著改善盆底肌肉的力量。
 						<br><br>
-						<b>瑜伽和普拉提:</b>这些活动也能帮助您<span>锻炼盆底肌</span>。
+						<b>瑜伽和普拉提:</b>这些活动也能帮助您<span class="js-key">锻炼盆底肌</span>。
 					`
 				}
 			]
@@ -46,20 +48,12 @@ const data = reactive({
 				},
 			]
         },
-    ]
+    ] as any[]
 });
 
-/* for (let i = 0; i < data.root.length; i++) {
-    // 使用 for 循环遍历 cont 数组
-    for (let j = 0; j < data.root[i].cont.length; j++) {
-        // 在 normalText 中插入 h3Tl
-        data.root[i].cont[j].normalText = `<h3>${data.root[i].cont[j].h3Tl}</h3>${data.root[i].cont[j].normalText}`;
-    }
-} */
+const count = ref(0);
 
-editText(data.root);
-
-onMounted(() => {
+onMounted(() => {	
     document.title = data.title;
     const element = document.querySelector("#dr-202403041930") as HTMLElement;
     if (element instanceof HTMLElement) {
@@ -69,13 +63,18 @@ onMounted(() => {
     } else {
         console.error("Unable to find the element with ID 'capture'");
     }
-
-	nextTick(() => {
-		saveImg(element);
-	});
+		
+	while (count.value <= data.temp.length) {
+		data.root.length && data.root.shift();
+		data.root.push(data.temp.shift());
+		count.value++;
+		nextTick(() => {
+			saveImg(element);
+		});
+	}
 });
 
-function saveImg(element: HTMLElement | null, setTitle = '', i = 0) {
+const saveImg = (element: HTMLElement | null, setTitle = '', i = 0) => {
 	const realHtml = document.getElementById('html-canvas');
 	const width = 1200;
 
@@ -130,7 +129,7 @@ function saveImg(element: HTMLElement | null, setTitle = '', i = 0) {
         </div>
         <div class="content" id="content">
             <template v-for="(item, i) in data.root" :key="i">
-            	<template v-for="(c, j) in item.cont" :key="j">
+            	<template v-if="item.cont" v-for="(c, j) in item.cont" :key="j">
 					<div v-if="c.h2Tl" class="h2-tl">
 						<h2 class="right">{{ c.h2Tl }}</h2>
 						<i class="line"></i>
