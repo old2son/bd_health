@@ -53,71 +53,39 @@ const data = reactive({
 
 const count = ref(0);
 
-onMounted(() => {	
+onMounted(async () => {   
     document.title = data.title;
-    const element = document.querySelector("#dr-202403041930") as HTMLElement;
+    const element = document.querySelector('#dr-202403041930') as HTMLElement;
     if (element instanceof HTMLElement) {
-        html2canvas(element).then(canvas => {
-            document.body.appendChild(canvas);
-        });
-    } else {
-        console.error("Unable to find the element with ID 'capture'");
+        await nextTick(); // Wait for one frame to ensure element is rendered
+        while (count.value <= data.temp.length) {
+            data.root.length && data.root.shift();
+            data.root.push(data.temp.shift());
+            count.value++;
+			editText(data.root)
+            await nextTick(); // Wait for the next render
+			eidtHtmlSetKey();
+            await saveImg(element, `${document.title}_${count.value}`, count.value); // Save the image
+        }
+    } 
+	else {
+        console.error('Unable to find the element with ID');
     }
-		
-	while (count.value <= data.temp.length) {
-		data.root.length && data.root.shift();
-		data.root.push(data.temp.shift());
-		count.value++;
-		nextTick(() => {
-			saveImg(element);
-		});
-	}
 });
 
-const saveImg = (element: HTMLElement | null, setTitle = '', i = 0) => {
-	const realHtml = document.getElementById('html-canvas');
-	const width = 1200;
-
-	const img_type = 'jpeg';
-	const height = 1600;
-	const canvas = document.createElement('canvas');
-	const scale = 1; //定义任意放大倍数 支持小数
-	canvas.width = width * scale; //定义canvas 宽度 * 缩放
-	canvas.height = height * scale; //定义canvas高度 *缩放
-
-    const context = canvas.getContext('2d');
-    if (context !== null) {
-        context.scale(scale, scale);
-    } 
-    else {
-        console.error('Unable to get 2d context from the canvas');
+const saveImg = async (element: HTMLElement | null, setTitle: string, i: number) => {
+    if (!element) {
+        console.error("Invalid element provided to saveImg function");
+        return;
     }
 
-	var opts = {
-		tainttest: true,
-		scale: scale, 
-		useCORS: true,
-		canvas: canvas, 
-		logging: true, //日志开关
-		width: width, //dom 原始宽度
-		height: height, //dom 原始高度
-        removeContainer: true,
-		name: 'pic'
-	};
-
-    if (element) {
-        html2canvas(element, opts).then(function (canvas) {
-            const imgUri = canvas.toDataURL('image/' + img_type, 0.9);
-            const saveLink = document.createElement('a');
-            saveLink.href = imgUri;
-            saveLink.download = setTitle + (i + 1) + '.' + (img_type === 'jpeg' ? 'jpg' : img_type);
-            saveLink.click();
-
-            const c = document.querySelector('canvas');
-            c && c.remove();
-        });
-    }
-}
+    const canvas = await html2canvas(element);
+    const imgUri = canvas.toDataURL('image/jpeg', 0.9);
+    const saveLink = document.createElement('a');
+    saveLink.href = imgUri;
+    saveLink.download = setTitle + '.' + 'jpg';
+    saveLink.click();
+};
 
 </script>
 
