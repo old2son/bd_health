@@ -11,21 +11,33 @@ const data = reactive({
         {
 			cont: [
 				{
-					h2Tl: '尿道炎能否自愈',
-					h3Tl: '1.了解敌人：漏尿的原因',
+					h2Tl: '注意事项',
+					h3Tl: '保持呼吸道通畅：',
 					normalText: 
 						`
-							首先，我们要明确一点，<span class="js-key">尿道炎不能自愈</span>。如果你有<span class="js-key">尿频、尿急、尿痛</span>等症状，一定要<span class="js-key">及时就医</span>，以免病情加重。，以免病情加重。，以免病情加重。
+							避免痰液、异物等阻塞呼吸道，影响呼吸功能。
 						`
 				},
 				{
-				h3Tl: '2.强化盆底肌',
-				normalText: 
-					`
-						<b>Kegel练习:</b>这是最基础也是最有效的方法之一。<span class="js-key">每天花几分钟</span>时间做Kegel练习，可以显著改善盆底肌肉的力量。
-						<br><br>
-						<b>瑜伽和普拉提:</b>这些活动也能帮助您<span class="js-key">锻炼盆底肌</span>。
-					`
+					h3Tl: '合理饮食',
+					normalText: 
+						`
+							患者应以<span class="js-key">清淡、易消化、营养丰富</span>的食物为主，避免辛辣、油腻等刺激性食物。
+						`
+				},
+				{
+					h3Tl: '适当锻炼',
+					normalText: 
+						`
+							在病情允许的情况下，患者可进行<span class="js-key">适当的锻炼</span>，以增强呼吸肌的力量，改善肺功能。
+						`
+				},
+				{
+					h3Tl: '定期复查',
+					normalText: 
+						`
+							患者应遵医嘱定期复查，以便及时了解病情变化，调整治疗方案。
+						`
 				}
 			]
         },
@@ -36,14 +48,14 @@ const data = reactive({
 					h3Tl: '饮食调整',
 					normalText: 
 						`
-							<span>多喝水</span>，尤其是<span>茶水</span>，可以帮助冲洗尿道，减少细菌滋生。同时，<span>避免食用辛辣、刺激性强</span>的食物，以免刺激尿道，加重症状。
+							多喝水，尤其是茶水，可以帮助冲洗尿道，减少细菌滋生。同时，避免食用辛辣、刺激性强的食物，以免刺激尿道，加重症状。
 						`
 				},
 				{
 					h3Tl: '个人卫生',
 					normalText: 
 						`
-							注意个人卫生，尤其是性生活后，要<span>及时清洁</span>，避免细菌感染。同时，<span>避免使用公共浴室</span>，以防交叉感染。
+							注意个人卫生，尤其是性生活后，要及时清洁，避免细菌感染。同时，避免使用公共浴室，以防交叉感染。
 						`
 				},
 			]
@@ -55,17 +67,25 @@ const count = ref(0);
 
 onMounted(async () => {   
     document.title = data.title;
-    const element = document.querySelector('#dr-202403041930') as HTMLElement;
-    if (element instanceof HTMLElement) {
+    const $element = document.querySelector('#dr-202403041930') as HTMLElement;
+	const $cont = document.getElementById('content') as HTMLElement;
+    if ($element instanceof HTMLElement) {
         await nextTick(); // Wait for one frame to ensure element is rendered
         while (count.value <= data.temp.length) {
             data.root.length && data.root.shift();
             data.root.push(data.temp.shift());
-            count.value++;
 			editText(data.root)
             await nextTick(); // Wait for the next render
 			eidtHtmlSetKey();
-            await saveImg(element, `${document.title}_${count.value}`, count.value); // Save the image
+			
+			if ($cont.getBoundingClientRect().height >= 1330) {
+				console.log(123)
+            } 
+			else {
+				count.value++;
+			}
+
+            await saveImg($element, `${document.title}_${count.value}`, count.value); // Save the image
         }
     } 
 	else {
